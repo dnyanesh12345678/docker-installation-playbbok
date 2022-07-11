@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: copy docker installation script to target server
+      copy:
+       src: get-docker.sh
+       dest: /tmp
+       mode: 777
+       owner: ubuntu
+       group: ubuntu
+      notify:
+       - execute script
+  handlers:
+   - name: execute script
+     shell: cd /tmp && ./get-docker.sh && docker --version && usermod -aG docker ubuntu
+     register: output
+   - debug:
+      var: output
